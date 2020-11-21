@@ -64,7 +64,7 @@ namespace JobsityChatbot.WebAPI
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ChatbotDbContext dbContext)
         {
             if (env.IsDevelopment())
             {
@@ -77,6 +77,8 @@ namespace JobsityChatbot.WebAPI
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            dbContext.Database.Migrate();
 
             app.UseEndpoints(endpoints =>
             {
