@@ -27,13 +27,29 @@ export class ChatroomComponent implements OnInit, OnDestroy {
     this.$currentUserId = this.authService.currentUser.subscribe(res => {
       this.currentUser = res;
     });
+
+    this.messagesService.startConnection().then(() => {
+      console.log('Chatroom hub started');
+    });
+
+    this.messagesService.onMessageReceived((msg: MessageResponse) => {
+      this.messages.push(msg);
+    });
   }
 
-  send(): void {
+  async send(): Promise<void> {
+    await this.messagesService.ensureConnection();
+
+    if (!this.newMessage || this.newMessage.trim() === '') {
+      return;
+    }
+
+    this.messagesService.sendMessage(this.newMessage);
     this.newMessage = '';
   }
 
   ngOnDestroy(): void {
+    this.messagesService.stopConnection();
     this.$currentUserId.unsubscribe();
   }
 }

@@ -15,7 +15,7 @@
                                     <div class="text-primary font-weight-bold">
                                         {{currentUser.userId == message.user.userId ? 'Me' : message.user.username}}
                                     </div>
-                                    <div><i class="far fa-clock mr-2"></i>{{message.createdOn | date}}</div>
+                                    <div><i class="far fa-clock mr-2"></i>{{message.createdOn | date:'medium'}}</div>
                                     <div>{{message.body}}</div>
                                 </div>
                             </li>

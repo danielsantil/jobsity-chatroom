@@ -41,8 +41,6 @@ namespace JobsityChatroom.WebAPI
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 });
 
-            services.AddSignalR();
-
             services.AddCors(opts =>
             {
                 opts.AddDefaultPolicy(builder =>
@@ -71,6 +69,8 @@ namespace JobsityChatroom.WebAPI
             });
 
             services.ConfigureAuthentication(_configuration);
+
+            services.AddSignalR();
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITokenService, TokenService>();

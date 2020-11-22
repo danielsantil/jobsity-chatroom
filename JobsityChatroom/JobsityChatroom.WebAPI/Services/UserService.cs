@@ -44,9 +44,14 @@ namespace JobsityChatroom.WebAPI.Services
             return user != null;
         }
 
-        private async Task<ApplicationUser> GetUser(string username)
+        public async Task<ApplicationUser> GetUser(string username)
         {
             return await _userManager.FindByNameAsync(username);
+        }
+
+        public async Task<ApplicationUser> GetUserById(string userId)
+        {
+            return await _userManager.FindByIdAsync(userId);
         }
     }
 }

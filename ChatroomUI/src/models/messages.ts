@@ -2,7 +2,7 @@ import { User } from './auth-models';
 export class Message {
     userId: string;
     body: string;
-    createdOn: Date;
+    createdOn?: Date;
 }
 
 export class MessageResponse {

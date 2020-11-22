@@ -10,5 +10,7 @@ namespace JobsityChatroom.WebAPI.Services
         Task<IdentityUser> Login(AuthViewModel authModel);
         Task<IdentityUser> Register(SignupViewModel authModel);
         Task<bool> UserExists(string username);
+        Task<ApplicationUser> GetUser(string username);
+        Task<ApplicationUser> GetUserById(string userId);
     }
 }
