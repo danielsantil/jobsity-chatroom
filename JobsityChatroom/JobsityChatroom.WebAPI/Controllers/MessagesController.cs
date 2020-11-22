@@ -22,12 +22,24 @@ namespace JobsityChatroom.WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<ChatMessage>> Get()
+        public async Task<IEnumerable<ChatMessageResponse>> Get()
         {
-            var messages = await _messagesRepository.GetAll();
+            var messages = (await _messagesRepository.GetAll(x => x.CreatedOn))
+                .TakeLast(50)
+                .Select(x => new ChatMessageResponse
+                {
+                    Body = x.Body,
+                    CreatedOn = x.CreatedOn,
+                    User = new UserViewModel {
+                        Email = x.User.Email,
+                        Username = x.User.UserName
+                    }
+                });
+
             return messages;
         }
 
+        // Testing purposes. TODO: Remove action.
         [HttpPost]
         public async Task Insert([FromBody] ChatMessageViewModel message)
         {

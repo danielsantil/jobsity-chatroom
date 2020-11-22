@@ -9,8 +9,7 @@ namespace JobsityChatroom.WebAPI.Data.Repository
     {
         Task<IEnumerable<T>> GetAll();
         Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>> expression);
-        Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>> expression,
-            Expression<Func<T, object>> orderBy, int limit);
+        Task<IEnumerable<T>> GetAll(Expression<Func<T, object>> orderBy);
         Task<T> Get(Expression<Func<T, bool>> expression);
         Task<int> Count(Expression<Func<T, bool>> expression);
         Task Insert(T entity);

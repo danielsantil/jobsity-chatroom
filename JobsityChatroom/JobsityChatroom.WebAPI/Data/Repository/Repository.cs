@@ -26,12 +26,10 @@ namespace JobsityChatroom.WebAPI.Data.Repository
             return await _context.Set<T>().Where(expression).ToListAsync();
         }
 
-        public virtual async Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>> expression,
-            Expression<Func<T, object>> orderBy, int limit)
+        public virtual async Task<IEnumerable<T>> GetAll(Expression<Func<T, object>> orderBy)
         {
-            return await _context.Set<T>().Where(expression)
+            return await _context.Set<T>()
                 .OrderBy(orderBy)
-                .Take(limit)
                 .ToListAsync();
         }
 

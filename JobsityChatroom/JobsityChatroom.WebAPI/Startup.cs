@@ -52,7 +52,8 @@ namespace JobsityChatroom.WebAPI
             });
 
             services.AddDbContext<ChatroomDbContext>(options =>
-                options.UseSqlServer(_configuration.GetConnectionString("JobsityChatroom")));
+                options.UseLazyLoadingProxies()
+                       .UseSqlServer(_configuration.GetConnectionString("JobsityChatroom")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ChatroomDbContext>()
