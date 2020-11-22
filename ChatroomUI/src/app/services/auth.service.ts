@@ -12,6 +12,7 @@ export class AuthService {
   private tokenKey = 'chatroom-auth-token';
   private currentUserSubject = new BehaviorSubject<User>(null);
   currentUser = this.currentUserSubject.asObservable();
+  accessToken: string;
 
   constructor(private http: HttpClient) { }
 
@@ -47,5 +48,6 @@ export class AuthService {
   private setSessionCredentials(auth: AuthResponse): void {
     localStorage.setItem(this.tokenKey, JSON.stringify(auth));
     this.currentUserSubject.next(auth.loggedUser);
+    this.accessToken = auth.accessToken;
   }
 }

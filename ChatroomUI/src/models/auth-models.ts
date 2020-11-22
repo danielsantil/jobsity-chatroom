@@ -8,7 +8,7 @@ export class SignupModel extends LoginModel {
 }
 
 export class User {
-    id: string;
+    userId: string;
     username: string;
     email: string;
 }

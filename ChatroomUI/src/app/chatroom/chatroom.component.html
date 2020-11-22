@@ -1,1 +1,40 @@
-<p>chatroom works!</p>
+<div class="mt-4">
+
+    <div class="card">
+        <div class="card-body">
+            <div class="row px-2">
+                <div class="col">
+
+                    <!-- Messages -->
+                    <div class="d-flex flex-column-reverse overflow-auto" style="height: 70vh;">
+                        <ul class="list-unstyled px-3">
+                            <li *ngFor="let message of messages"
+                                class="d-flex mb-3"
+                                [ngClass]="(currentUser.userId == message.user.userId) ? 'justify-content-end' : 'justify-content-start'">
+                                <div class="p-3 border rounded" style="max-width: 75%;">
+                                    <div class="text-primary font-weight-bold">
+                                        {{currentUser.userId == message.user.userId ? 'Me' : message.user.username}}
+                                    </div>
+                                    <div><i class="far fa-clock mr-2"></i>{{message.createdOn | date}}</div>
+                                    <div>{{message.body}}</div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- New message box -->
+                    <div class="input-group px-3">
+                        <input class="form-control" [(ngModel)]="newMessage"
+                                placeholder="Type your message here..." />
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-success btn-sm float-right"
+                                (click)="send()">Send</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

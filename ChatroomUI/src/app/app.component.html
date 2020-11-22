@@ -1,8 +1,16 @@
-<div class="container my-3 vh-100">
+<div class="container my-3"> 
+    <!-- style="height: 90vh;"> -->
     <div class="row">
         <h2 class="col text-primary">Chatroom</h2>
-        <button *ngIf="loggedUser" class="btn btn-secondary float-left" (click)="logout()">Logout
-        </button>
+        <div class="col">
+            <button *ngIf="loggedUser" class="btn btn-secondary float-right" (click)="logout()">
+                Logout
+            </button>
+        </div>
+    </div>
+
+    <div *ngIf="loggedUser" class="text-secondary">
+        <h5>Hello, {{loggedUser.username}}</h5>
     </div>
 
     <router-outlet></router-outlet>
