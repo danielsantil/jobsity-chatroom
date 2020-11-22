@@ -16,7 +16,7 @@ namespace JobsityChatroom.WebAPI.Services
 
         public async Task<IdentityUser> Login(AuthViewModel model)
         {
-            var user = await _userManager.FindByNameAsync(model.Username);
+            var user = await GetUser(model.Username);
             if (!await _userManager.CheckPasswordAsync(user, model.Password))
                 return null;
 
@@ -35,13 +35,18 @@ namespace JobsityChatroom.WebAPI.Services
             if (!result.Succeeded)
                 return null;
 
-            return newUser;
+            return await GetUser(model.Username);
         }
 
         public async Task<bool> UserExists(string username)
         {
-            var user = await _userManager.FindByNameAsync(username);
+            var user = await GetUser(username);
             return user != null;
+        }
+
+        private async Task<ApplicationUser> GetUser(string username)
+        {
+            return await _userManager.FindByNameAsync(username);
         }
     }
 }

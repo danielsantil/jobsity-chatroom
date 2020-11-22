@@ -99,7 +99,7 @@ namespace JobsityChatroom.WebAPI
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHub<ChatroomHub>("/chatroom");
+                endpoints.MapHub<ChatroomHub>("/slr/chatroom");
             });
         }
     }

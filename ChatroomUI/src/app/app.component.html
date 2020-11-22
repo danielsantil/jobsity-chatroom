@@ -1,1 +1,11 @@
-{{title}}
+<div class="container my-3 vh-100">
+    <div class="row">
+        <h2 class="col text-primary">Chatroom</h2>
+        <button *ngIf="loggedUser" class="btn btn-secondary float-left" (click)="logout()">Logout
+        </button>
+    </div>
+
+    <router-outlet></router-outlet>
+</div>
+
+<ngx-spinner bdColor="rgba(51, 51, 51, 0.5)"></ngx-spinner>

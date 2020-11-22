@@ -31,6 +31,7 @@ namespace JobsityChatroom.WebAPI.Controllers
                     Body = x.Body,
                     CreatedOn = x.CreatedOn,
                     User = new UserViewModel {
+                        UserId = x.User.Id,
                         Email = x.User.Email,
                         Username = x.User.UserName
                     }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using JobsityChatroom.WebAPI.Models;
 using JobsityChatroom.WebAPI.Models.Authentication;
+using JobsityChatroom.WebAPI.Models.Chatroom;
 using JobsityChatroom.WebAPI.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -40,7 +41,7 @@ namespace JobsityChatroom.WebAPI.Controllers
 
             var accessToken = _tokenService.GetAccessToken(authResult);
 
-            return Ok(new ApiResponse(accessToken));
+            return Ok(BuildResponse(authResult, accessToken));
         }
 
         [HttpPost]
@@ -59,7 +60,22 @@ namespace JobsityChatroom.WebAPI.Controllers
 
             var accessToken = _tokenService.GetAccessToken(authResult);
 
-            return Ok(new ApiResponse(accessToken));
+            return Ok(BuildResponse(authResult, accessToken));
+        }
+
+        private AuthResponse BuildResponse(IdentityUser user, string accessToken)
+        {
+            var response = new AuthResponse
+            {
+                AccessToken = accessToken,
+                LoggedUser = new UserViewModel
+                {
+                    UserId = user.Id,
+                    Username = user.UserName,
+                    Email = user.Email
+                }
+            };
+            return response;
         }
     }
 }
