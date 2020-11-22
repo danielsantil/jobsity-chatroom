@@ -28,7 +28,7 @@ export class AuthService {
   }
 
   initSessionCredentials(): void {
-    const savedSessionJson = sessionStorage.getItem(this.tokenKey);
+    const savedSessionJson = localStorage.getItem(this.tokenKey);
     if (savedSessionJson) {
       const auth: AuthResponse = JSON.parse(savedSessionJson);
       this.setSessionCredentials(auth);
@@ -41,11 +41,11 @@ export class AuthService {
 
   logout(): void {
     this.currentUserSubject.next(null);
-    sessionStorage.removeItem(this.tokenKey);
+    localStorage.removeItem(this.tokenKey);
   }
 
   private setSessionCredentials(auth: AuthResponse): void {
-    sessionStorage.setItem(this.tokenKey, JSON.stringify(auth));
+    localStorage.setItem(this.tokenKey, JSON.stringify(auth));
     this.currentUserSubject.next(auth.loggedUser);
   }
 }
