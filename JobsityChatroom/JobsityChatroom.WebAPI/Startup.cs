@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using JobsityChatroom.WebAPI.Data;
+using JobsityChatroom.WebAPI.Data.Repository;
 using JobsityChatroom.WebAPI.ExtensionMethods;
+using JobsityChatroom.WebAPI.Hubs;
 using JobsityChatroom.WebAPI.Models.Authentication;
 using JobsityChatroom.WebAPI.Services;
 using Microsoft.AspNetCore.Builder;
@@ -39,6 +41,16 @@ namespace JobsityChatroom.WebAPI
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 });
 
+            services.AddSignalR();
+
+            services.AddCors(opts =>
+            {
+                opts.AddDefaultPolicy(builder =>
+                {
+                    builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                });
+            });
+
             services.AddDbContext<ChatroomDbContext>(options =>
                 options.UseSqlServer(_configuration.GetConnectionString("JobsityChatroom")));
 
@@ -61,28 +73,32 @@ namespace JobsityChatroom.WebAPI
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ChatroomDbContext dbContext)
         {
+            dbContext.Database.Migrate();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
             app.UseHttpsRedirection();
-
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthentication();
             app.UseAuthorization();
 
-            dbContext.Database.Migrate();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<ChatroomHub>("/chatroom");
             });
         }
     }

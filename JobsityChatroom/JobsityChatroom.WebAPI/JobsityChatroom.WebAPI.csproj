@@ -12,6 +12,9 @@
     <Folder Include="Models\Authentication\" />
     <Folder Include="ExtensionMethods\" />
     <Folder Include="Services\" />
+    <Folder Include="Hubs\" />
+    <Folder Include="Models\Chatroom\" />
+    <Folder Include="Data\Repository\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.0" />

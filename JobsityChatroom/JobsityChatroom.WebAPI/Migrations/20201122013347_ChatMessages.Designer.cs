@@ -4,14 +4,16 @@ using JobsityChatroom.WebAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace JobsityChatroom.WebAPI.Migrations
 {
     [DbContext(typeof(ChatroomDbContext))]
-    partial class ChatroomDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201122013347_ChatMessages")]
+    partial class ChatMessages
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
