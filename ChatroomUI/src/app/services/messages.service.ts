@@ -1,3 +1,4 @@
+import { environment } from './../../environments/environment';
 import { AuthService } from './auth.service';
 import { Message } from './../../models/messages';
 import { MessageResponse } from '../../models/messages';
@@ -9,7 +10,7 @@ import { HubConnection, HubConnectionBuilder, HubConnectionState } from '@micros
   providedIn: 'root'
 })
 export class MessagesService {
-  private apiUrl = '/api/messages';
+  private apiUrl = environment.baseUrl + '/api/messages';
   private chatroomHub: HubConnection;
 
   constructor(private http: HttpClient,
@@ -35,9 +36,11 @@ export class MessagesService {
 
   startConnection(): Promise<void> {
     if (!this.chatroomHub) {
-      this.chatroomHub = new HubConnectionBuilder().withUrl('/slr/chatroom', {
+      this.chatroomHub = new HubConnectionBuilder().withUrl(environment.baseUrl + '/slr/chatroom', {
         accessTokenFactory: () => this.authService.accessToken
-      }).build();
+      })
+      .configureLogging(2)
+      .build();
     }
     return this.chatroomHub.start();
   }

@@ -30,6 +30,9 @@ export class ChatroomComponent implements OnInit, OnDestroy {
 
     this.messagesService.startConnection().then(() => {
       console.log('Chatroom hub started');
+    })
+    .catch(er => {
+      console.log(er);
     });
 
     this.messagesService.onMessageReceived((msg: MessageResponse) => {

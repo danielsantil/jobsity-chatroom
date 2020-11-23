@@ -1,3 +1,4 @@
+import { environment } from './../../environments/environment';
 import { LoginModel, SignupModel, User, AuthResponse } from './../../models/auth-models';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -8,7 +9,7 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = '/api/auth/';
+  private apiUrl = environment.baseUrl + '/api/auth/';
   private tokenKey = 'chatroom-auth-token';
   private currentUserSubject = new BehaviorSubject<User>(null);
   currentUser = this.currentUserSubject.asObservable();

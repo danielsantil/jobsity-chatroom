@@ -43,15 +43,24 @@ namespace JobsityChatroom.WebAPI
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 });
 
-            services.AddSignalR();
-
-            services.AddCors(opts =>
+            services.AddCors(options =>
             {
-                opts.AddDefaultPolicy(builder =>
-                {
-                    builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-                });
+                options.AddPolicy("ProdCORS",
+                    builder => builder.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
             });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("DevCORS",
+                    builder => builder.WithOrigins("http://localhost:4200")
+                        .AllowCredentials()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+            });
+
+            services.AddSignalR();
 
             services.AddDbContext<ChatroomDbContext>(options =>
                 options.UseLazyLoadingProxies()
@@ -92,12 +101,13 @@ namespace JobsityChatroom.WebAPI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseCors("DevCORS");
             }
+            else
+                app.UseCors("ProdCORS");
 
             app.UseHttpsRedirection();
             app.UseRouting();
-
-            app.UseCors();
 
             app.UseAuthentication();
             app.UseAuthorization();

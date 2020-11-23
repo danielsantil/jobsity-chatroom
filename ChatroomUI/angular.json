@@ -67,8 +67,7 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "ChatroomUI:build",
-            "proxyConfig": "proxy.conf.json"
+            "browserTarget": "ChatroomUI:build"
           },
           "configurations": {
             "production": {
