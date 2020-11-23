@@ -1,23 +1,26 @@
 ﻿using System;
 using System.Text;
+using JobsityChatroom.Common.Constants;
+using Microsoft.Extensions.Configuration;
 using RabbitMQ.Client;
 
 namespace JobsityChatroom.WebAPI.MQ
 {
     public class StockMessageSender : IStockMessageSender
     {
-        private const string STOCK_MESSAGE_REQUEST_Q = "StockMessageRequest";
         private readonly ConnectionFactory _factory;
+        private readonly IConfiguration _configuration;
 
-        public StockMessageSender()
+        public StockMessageSender(IConfiguration configuration)
         {
+            _configuration = configuration;
             _factory = new ConnectionFactory()
             {
-                HostName = "localhost",
-                Port = 5672,
-                VirtualHost = "/",
-                UserName = "admin",
-                Password = "admin"
+                HostName = _configuration["MQ:HostName"],
+                Port = int.Parse(_configuration["MQ:Port"]),
+                VirtualHost = _configuration["MQ:VirtualHost"],
+                UserName = _configuration["MQ:User"],
+                Password = _configuration["MQ:Password"]
             };
         }
 
@@ -25,7 +28,7 @@ namespace JobsityChatroom.WebAPI.MQ
         {
             using var connection = _factory.CreateConnection();
             using var channel = connection.CreateModel();
-            channel.QueueDeclare(queue: STOCK_MESSAGE_REQUEST_Q,
+            channel.QueueDeclare(queue: AppConstants.STOCK_MESSAGE_REQUEST_Q,
                                     durable: false,
                                     exclusive: false,
                                     autoDelete: false,
@@ -33,7 +36,7 @@ namespace JobsityChatroom.WebAPI.MQ
 
             var body = Encoding.UTF8.GetBytes(stockCode);
             channel.BasicPublish(exchange: "",
-                                    routingKey: STOCK_MESSAGE_REQUEST_Q,
+                                    routingKey: AppConstants.STOCK_MESSAGE_REQUEST_Q,
                                     basicProperties: null,
                                     body: body);
         }

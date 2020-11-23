@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using JobsityChatroom.Common.Constants;
 using JobsityChatroom.WebAPI.Data.Repository;
 using JobsityChatroom.WebAPI.Models.Chatroom;
 using JobsityChatroom.WebAPI.MQ;
@@ -10,7 +11,6 @@ namespace JobsityChatroom.WebAPI.Hubs
 {
     public class ChatroomHub : Hub
     {
-        public const string MESSAGE_RECEIVED_EVENT = "MessageReceived";
         private readonly IRepository<ChatMessage> _messagesRepository;
         private readonly IUserService _userService;
         private readonly IStockMessageSender _stockSender;
@@ -25,16 +25,23 @@ namespace JobsityChatroom.WebAPI.Hubs
 
         public async Task SendMessage(ChatMessageViewModel messageModel)
         {
+            var isCommand = IsCommand(messageModel.Body);
+            messageModel.CreatedOn = DateTime.Now;
+            await SendMessageToAll(messageModel, isCommand);
+
             try
             {
-                if (IsCommand(messageModel.Body))
+                if (isCommand)
                 {
+                    // TODO create ChatCommandsHandler
                     var commandAndValue = ExtractCommandAndValue(messageModel.Body);
-                    _stockSender.Send(commandAndValue.Item2);
+                    if (commandAndValue.Item1 == "stock")
+                        _stockSender.Send(commandAndValue.Item2);
+                    else
+                        await SendMessageFromBot("Unknown command");
                 }
                 else
                 {
-                    messageModel.CreatedOn = DateTime.Now;
                     await _messagesRepository.Insert(new ChatMessage
                     {
                         CreatedOn = messageModel.CreatedOn,
@@ -43,30 +50,39 @@ namespace JobsityChatroom.WebAPI.Hubs
                     });
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-            }
-            finally
-            {
-                await SendMessageToAll(messageModel);
+                await SendMessageFromBot(e.Message);
             }
 
         }
 
-        private async Task SendMessageToAll(ChatMessageViewModel messageModel)
+        private async Task SendMessageToAll(ChatMessageViewModel messageModel, bool isCommand)
         {
-            var user = await _userService.GetUserById(messageModel.UserId);
+            var dbUser = await _userService.GetUserById(messageModel.UserId);
+            var user = new UserViewModel { UserId = dbUser.Id, Username = dbUser.UserName, Email = dbUser.Email }; 
+            await SendMessageToHub(messageModel.Body, user, isCommand, messageModel.CreatedOn);
+        }
 
-            await Clients.All.SendAsync(MESSAGE_RECEIVED_EVENT, new ChatMessageResponse
+        private async Task SendMessageFromBot(string body)
+        {
+            var botUser = new UserViewModel
             {
-                Body = messageModel.Body,
-                CreatedOn = messageModel.CreatedOn,
-                User = new UserViewModel
-                {
-                    UserId = user.Id,
-                    Username = user.UserName,
-                    Email = user.Email
-                }
+                UserId = AppConstants.CHATBOT_USERID,
+                Username = AppConstants.CHATBOT_USERNAME
+            };
+            await SendMessageToHub(body, botUser);
+        }
+
+        private async Task SendMessageToHub(string body, UserViewModel user,
+            bool isCommand = false, DateTime? createdOn = null)
+        {
+            await Clients.All.SendAsync(AppConstants.MESSAGE_RECEIVED_HUB_EVENT, new ChatMessageResponse
+            {
+                Body = body,
+                CreatedOn = createdOn ?? DateTime.Now,
+                IsCommand = isCommand,
+                User = user
             });
         }
 

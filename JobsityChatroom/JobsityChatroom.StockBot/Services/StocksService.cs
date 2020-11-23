@@ -5,14 +5,15 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using CsvHelper;
+using JobsityChatroom.Common.Models;
 
 namespace JobsityChatroom.StockBot.Services
 {
     public class StocksService
     {
-        public async Task<StockInfo> GetStockInfo(string stockCode)
+        public async Task<StockInfoResponse> GetStockInfo(string stockCode)
         {
-            StockInfo response = null;
+            var response = new StockInfoResponse();
             try
             {
                 var stockUrl = $"https://stooq.com/q/l/?s={stockCode}&f=sd2t2ohlcv&h&e=csv";
@@ -20,7 +21,8 @@ namespace JobsityChatroom.StockBot.Services
                 using var client = new HttpClient();
                 var csvStream = await client.GetStreamAsync(stockUrl);
 
-                response = GetStockInfo(csvStream);
+                response.StockInfo = GetStockInfo(csvStream);
+                response.Success = true;
             }
             catch (Exception e)
             {
@@ -37,15 +39,5 @@ namespace JobsityChatroom.StockBot.Services
             var records = csv.GetRecords<StockInfo>();
             return records.FirstOrDefault();
         }
-    }
-
-    public class StockInfo
-    {
-        public string Symbol { get; set; }
-        public decimal Open { get; set; }
-        public decimal High { get; set; }
-        public decimal Low { get; set; }
-        public decimal Close { get; set; }
-        public long Volume { get; set; }
     }
 }

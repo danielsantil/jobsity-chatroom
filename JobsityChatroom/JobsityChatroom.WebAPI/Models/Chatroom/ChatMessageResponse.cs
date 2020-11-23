@@ -6,6 +6,7 @@ namespace JobsityChatroom.WebAPI.Models.Chatroom
         public string Body { get; set; }
         public UserViewModel User { get; set; }
         public DateTime CreatedOn { get; set; }
+        public bool IsCommand { get; set; }
     }
 
     public class UserViewModel

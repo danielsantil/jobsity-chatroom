@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using JobsityChatroom.Common.Constants;
 using JobsityChatroom.StockBot.Services;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -8,7 +9,6 @@ namespace JobsityChatroom.StockBot.MQ
 {
     public class StockBotMessageConsumer
     {
-        private const string STOCK_MESSAGE_REQUEST_Q = "StockMessageRequest";
         private readonly StocksService _stocksService;
         private readonly StockBotMessageSender _stockMessageSender;
         private readonly IConnection _connection;
@@ -26,7 +26,7 @@ namespace JobsityChatroom.StockBot.MQ
             };
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
-            _channel.QueueDeclare(queue: STOCK_MESSAGE_REQUEST_Q,
+            _channel.QueueDeclare(queue: AppConstants.STOCK_MESSAGE_REQUEST_Q,
                                     durable: false,
                                     exclusive: false,
                                     autoDelete: false,
@@ -47,10 +47,10 @@ namespace JobsityChatroom.StockBot.MQ
                 Console.WriteLine("Received request for stock {0}", stockCode);
 
                 var stockInfo = await _stocksService.GetStockInfo(stockCode);
-                _stockMessageSender.Send(stockInfo?.Close.ToString() ?? "None");
+                _stockMessageSender.Send(stockInfo);
             };
 
-            _channel.BasicConsume(queue: STOCK_MESSAGE_REQUEST_Q,
+            _channel.BasicConsume(queue: AppConstants.STOCK_MESSAGE_REQUEST_Q,
                                     autoAck: true,
                                     consumer: consumer);
         }

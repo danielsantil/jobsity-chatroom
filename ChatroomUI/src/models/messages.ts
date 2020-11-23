@@ -9,4 +9,5 @@ export class MessageResponse {
     user: User;
     body: string;
     createdOn: Date;
+    isCommand: boolean;
 }

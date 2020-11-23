@@ -39,17 +39,5 @@ namespace JobsityChatroom.WebAPI.Controllers
 
             return messages;
         }
-
-        // Testing purposes. TODO: Remove action.
-        [HttpPost]
-        public async Task Insert([FromBody] ChatMessageViewModel message)
-        {
-            await _messagesRepository.Insert(new ChatMessage
-            {
-                CreatedOn = DateTime.Now,
-                UserId = message.UserId,
-                Body = message.Body
-            });
-        }
     }
 }
