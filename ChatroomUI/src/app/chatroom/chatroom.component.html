@@ -10,13 +10,18 @@
                         <ul class="list-unstyled px-3">
                             <li *ngFor="let message of messages"
                                 class="d-flex mb-3 mt-1"
-                                [ngClass]="(currentUser.userId == message.user.userId) ? 'justify-content-end' : 'justify-content-start'">
+                                [ngClass]="(currentUser.userId == message.user.userId) ? 'justify-content-end text-right' : 'justify-content-start'">
                                 <div class="p-3 border rounded" style="max-width: 75%;">
                                     <div class="text-primary font-weight-bold">
                                         {{currentUser.userId == message.user.userId ? 'Me' : message.user.username}}
                                     </div>
-                                    <div><i class="far fa-clock mr-2"></i>{{message.createdOn | date:'medium'}}</div>
+                                    <div class="text-secondary" style="font-size: 0.9rem;">
+                                        <i class="far fa-clock mr-2"></i>{{message.createdOn | date:'medium'}}
+                                    </div>
                                     <div>{{message.body}}</div>
+                                    <div *ngIf="message.isCommand" class="text-info" style="font-size: 0.8rem;">
+                                        Command message
+                                    </div>
                                 </div>
                             </li>
                         </ul>
