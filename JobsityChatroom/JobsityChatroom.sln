@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobsityChatroom.StockBot", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobsityChatroom.Common", "JobsityChatroom.Common\JobsityChatroom.Common.csproj", "{452DA8D8-EDCA-4566-9595-904F1863556E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobsityChatroom.UnitTest", "JobsityChatroom.UnitTest\JobsityChatroom.UnitTest.csproj", "{F2657E4E-E450-4360-97F1-DC5E44059801}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{452DA8D8-EDCA-4566-9595-904F1863556E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{452DA8D8-EDCA-4566-9595-904F1863556E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{452DA8D8-EDCA-4566-9595-904F1863556E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2657E4E-E450-4360-97F1-DC5E44059801}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2657E4E-E450-4360-97F1-DC5E44059801}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2657E4E-E450-4360-97F1-DC5E44059801}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2657E4E-E450-4360-97F1-DC5E44059801}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
