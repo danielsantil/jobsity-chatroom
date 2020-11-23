@@ -16,5 +16,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\JobsityChatroom.WebAPI\JobsityChatroom.WebAPI.csproj" />
+    <ProjectReference Include="..\JobsityChatroom.StockBot\JobsityChatroom.StockBot.csproj" />
   </ItemGroup>
 </Project>

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using JobsityChatroom.Common.Constants;
 using JobsityChatroom.WebAPI.Data.Repository;
 using JobsityChatroom.WebAPI.Models.Chatroom;
+using JobsityChatroom.WebAPI.Models.Command;
 using JobsityChatroom.WebAPI.MQ;
 using JobsityChatroom.WebAPI.Services;
 using Microsoft.AspNetCore.SignalR;
@@ -14,31 +15,33 @@ namespace JobsityChatroom.WebAPI.Hubs
         private readonly IRepository<ChatMessage> _messagesRepository;
         private readonly IUserService _userService;
         private readonly IStockMessageSender _stockSender;
+        private readonly IChatCommandService _commandService;
 
         public ChatroomHub(IRepository<ChatMessage> messagesRepository,
-            IUserService userService, IStockMessageSender stockSender)
+            IUserService userService, IStockMessageSender stockSender,
+            IChatCommandService commandService)
         {
             _messagesRepository = messagesRepository;
             _userService = userService;
             _stockSender = stockSender;
+            _commandService = commandService;
         }
 
         public async Task SendMessage(ChatMessageViewModel messageModel)
         {
-            var isCommand = IsCommand(messageModel.Body);
+            var isCommand = _commandService.IsCommand(messageModel.Body);
             messageModel.CreatedOn = DateTime.Now;
+            messageModel.Body = messageModel.Body.Trim();
             await SendMessageToAll(messageModel, isCommand);
 
             try
             {
                 if (isCommand)
                 {
-                    // TODO create ChatCommandsHandler
-                    var commandAndValue = ExtractCommandAndValue(messageModel.Body);
-                    if (commandAndValue.Item1 == "stock")
-                        _stockSender.Send(commandAndValue.Item2);
-                    else
-                        await SendMessageFromBot("Unknown command");
+                    _commandService.Handle(messageModel.Body, command =>
+                    {
+                        _stockSender.Send(command.Value);
+                    });
                 }
                 else
                 {
@@ -50,7 +53,7 @@ namespace JobsityChatroom.WebAPI.Hubs
                     });
                 }
             }
-            catch (Exception e)
+            catch (CommandException e)
             {
                 await SendMessageFromBot(e.Message);
             }
@@ -84,22 +87,6 @@ namespace JobsityChatroom.WebAPI.Hubs
                 IsCommand = isCommand,
                 User = user
             });
-        }
-
-        private bool IsCommand(string message)
-        {
-            return !string.IsNullOrWhiteSpace(message) && message.StartsWith("/");
-        }
-
-        private (string, string) ExtractCommandAndValue(string message)
-        {
-            var parts = message.Trim().ToLower().Substring(1).Split("=");
-            if (parts.Length < 2)
-            {
-                throw new Exception("Invalid command syntax");
-            }
-
-            return (parts[0], parts[1]);
         }
     }
 }

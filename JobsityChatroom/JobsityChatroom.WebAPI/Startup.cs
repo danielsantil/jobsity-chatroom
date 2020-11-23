@@ -75,6 +75,7 @@ namespace JobsityChatroom.WebAPI
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IChatCommandService, ChatCommandService>();
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
             services.AddSingleton<IStockMessageSender, StockMessageSender>();
