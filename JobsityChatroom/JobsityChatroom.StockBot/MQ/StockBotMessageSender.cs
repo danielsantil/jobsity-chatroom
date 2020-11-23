@@ -2,6 +2,7 @@
 using System.Text;
 using JobsityChatroom.Common.Constants;
 using JobsityChatroom.Common.Models;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 
@@ -10,16 +11,18 @@ namespace JobsityChatroom.StockBot.MQ
     public class StockBotMessageSender
     {
         private readonly ConnectionFactory _factory;
+        private readonly IConfiguration _configuration;
 
-        public StockBotMessageSender()
+        public StockBotMessageSender(IConfiguration configuration)
         {
+            _configuration = configuration;
             _factory = new ConnectionFactory()
             {
-                HostName = "localhost",
-                Port = 5672,
-                VirtualHost = "/",
-                UserName = "admin",
-                Password = "admin"
+                HostName = _configuration["MQ:HostName"],
+                Port = int.Parse(_configuration["MQ:Port"]),
+                VirtualHost = _configuration["MQ:VirtualHost"],
+                UserName = _configuration["MQ:User"],
+                Password = _configuration["MQ:Password"]
             };
 
         }

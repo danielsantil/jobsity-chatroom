@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using JobsityChatroom.WebAPI.Data;
 using JobsityChatroom.WebAPI.Data.Repository;
@@ -85,6 +86,7 @@ namespace JobsityChatroom.WebAPI
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ChatroomDbContext dbContext)
         {
+            EnsureDbConnection(dbContext);
             dbContext.Database.Migrate();
 
             if (env.IsDevelopment())
@@ -106,6 +108,22 @@ namespace JobsityChatroom.WebAPI
                 endpoints.MapControllers();
                 endpoints.MapHub<ChatroomHub>("/slr/chatroom");
             });
+        }
+
+        private void EnsureDbConnection(ChatroomDbContext dbContext, int retries = 0)
+        {
+            if (!dbContext.Database.CanConnect())
+            {
+                if (retries == 10)
+                {
+                    Console.WriteLine("Max retries reached.");
+                    return;
+                }
+                retries += 1;
+                Console.WriteLine("DB unreachable. Attempting connection after {0} ms. Retry count: {1}", 3000, retries);
+                Thread.Sleep(3000);
+                EnsureDbConnection(dbContext, retries);
+            }
         }
     }
 }
