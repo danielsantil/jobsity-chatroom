@@ -9,7 +9,7 @@
                     <div class="d-flex flex-column-reverse overflow-auto" style="height: 70vh;">
                         <ul class="list-unstyled px-3">
                             <li *ngFor="let message of messages"
-                                class="d-flex mb-3"
+                                class="d-flex mb-3 mt-1"
                                 [ngClass]="(currentUser.userId == message.user.userId) ? 'justify-content-end' : 'justify-content-start'">
                                 <div class="p-3 border rounded" style="max-width: 75%;">
                                     <div class="text-primary font-weight-bold">
@@ -25,7 +25,8 @@
                     <!-- New message box -->
                     <div class="input-group px-3">
                         <input class="form-control" [(ngModel)]="newMessage"
-                                placeholder="Type your message here..." />
+                                placeholder="Type your message here..."
+                                (keyup.enter)="send()" />
                         <div class="input-group-append">
                             <button type="button" class="btn btn-success btn-sm float-right"
                                 (click)="send()">Send</button>

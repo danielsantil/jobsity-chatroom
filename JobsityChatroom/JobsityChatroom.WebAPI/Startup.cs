@@ -7,6 +7,7 @@ using JobsityChatroom.WebAPI.Data.Repository;
 using JobsityChatroom.WebAPI.ExtensionMethods;
 using JobsityChatroom.WebAPI.Hubs;
 using JobsityChatroom.WebAPI.Models.Authentication;
+using JobsityChatroom.WebAPI.MQ;
 using JobsityChatroom.WebAPI.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -41,6 +42,8 @@ namespace JobsityChatroom.WebAPI
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 });
 
+            services.AddSignalR();
+
             services.AddCors(opts =>
             {
                 opts.AddDefaultPolicy(builder =>
@@ -70,11 +73,12 @@ namespace JobsityChatroom.WebAPI
 
             services.ConfigureAuthentication(_configuration);
 
-            services.AddSignalR();
-
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+            services.AddSingleton<IStockMessageSender, StockMessageSender>();
+            services.AddHostedService<StockMessageConsumer>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
