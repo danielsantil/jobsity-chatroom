@@ -4,8 +4,8 @@
 - Download project as zip or clone this repository using git
 - Download and install [Docker](https://www.docker.com/products/docker-desktop)
 - Open a terminal in the project folder
-- Run the following command `docker-compose up` to start the services.
-    - If you wish to reun the services in background, run `docker-compose up -d`
+- Run the following command `docker-compose up` to start the services. This might take some time, be patient.
+    - If you wish to reun the services in background, run `docker-compose up -d`.
 - Open a browser and go to *http://localhost:8080*
 
 **Note about browsers support**: As long as you're not using IE10 or older, you should be fine. :)
